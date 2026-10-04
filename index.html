@@ -2,1141 +2,710 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Urlaub 2026 – Utrechtse Heuvelrug</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silvester 2026 — Unterkünfte Planner</title>
     
+    <!-- Google Fonts: Space Grotesk & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
         :root {
-            --bg-color: #F8FAFC;
-            --card-bg: #FFFFFF;
-            --text-main: #0F172A;
-            --text-muted: #64748B;
-            --text-light: #94A3B8;
-            --border-color: #E2E8F0;
-            --border-hover: #CBD5E1;
+            --bg-color: #FAFAFC;
+            --surface: #FFFFFF;
+            --text-main: #18181B;
+            --text-muted: #71717A;
+            --border-color: #E4E4E7;
             
-            --accent-dark: #0F172A;
-            --accent-subtle: #F1F5F9;
+            --accent-primary: #18181B;
+            --accent-green-bg: #ECFDF5;
+            --accent-green-text: #047857;
+            --accent-yellow-bg: #FEF3C7;
+            --accent-yellow-text: #B45309;
+            --accent-purple-bg: #F5F3FF;
+            --accent-purple-text: #6D28D9;
+            --accent-blue-bg: #EFF6FF;
+            --accent-blue-text: #1D4ED8;
+            --accent-red-bg: #FEF2F2;
+            --accent-red-text: #B91C1C;
             
             --radius-lg: 20px;
-            --radius-md: 14px;
+            --radius-md: 12px;
             --radius-sm: 8px;
             
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.04);
-            --shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.05);
-            --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            --shadow-subtle: 0 4px 20px -2px rgba(24, 24, 27, 0.05);
+            --shadow-hover: 0 12px 30px -4px rgba(24, 24, 27, 0.08);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        html, body {
-            width: 100%;
-            overflow-x: hidden;
-            background-color: var(--bg-color);
-            color: var(--text-main);
         }
 
         body {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            padding: 3rem 1.5rem;
+            max-width: 1280px;
             margin: 0 auto;
+            -webkit-font-smoothing: antialiased;
         }
 
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* Header */
         header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            background: var(--accent-dark);
-            color: white;
-            padding: 24px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
-            width: 100%;
+            align-items: flex-end;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 1.5rem;
         }
 
-        .header-title h1 {
-            font-size: 1.6rem;
+        .header-title-group h1 {
+            font-size: 2.2rem;
             font-weight: 700;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            margin-bottom: 0.4rem;
         }
 
-        .header-title p {
-            color: var(--text-light);
-            font-size: 0.88rem;
-            margin-top: 4px;
+        .header-title-group p {
+            color: var(--text-muted);
+            font-size: 1rem;
             font-weight: 500;
         }
 
-        .sync-badge {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 8px 14px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 500;
+        .header-tags {
             display: flex;
-            align-items: center;
             gap: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            cursor: pointer;
-            color: #E2E8F0;
-        }
-
-        .sync-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #10B981;
-            border-radius: 50%;
-            transition: background-color 0.3s ease;
-        }
-
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 16px;
-            width: 100%;
-        }
-
-        .bento-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 22px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .card-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-main);
-        }
-
-        .card-title i { color: var(--text-muted); }
-
-        .col-span-12 { grid-column: span 12; }
-        .col-span-7 { grid-column: span 7; }
-        .col-span-5 { grid-column: span 5; }
-        .col-span-4 { grid-column: span 4; }
-
-        @media (max-width: 1024px) {
-            .col-span-7, .col-span-5, .col-span-4 { grid-column: span 12; }
-        }
-
-        @media (max-width: 768px) {
-            body { padding: 8px; }
-            header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 18px; }
-            .bento-grid { grid-template-columns: 1fr; gap: 12px; }
-            .col-span-12, .col-span-7, .col-span-5, .col-span-4 { grid-column: span 1; }
-        }
-
-        .countdown-container {
-            background: var(--accent-subtle);
-            border-radius: var(--radius-md);
-            padding: 14px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .countdown-item { display: flex; flex-direction: column; align-items: center; }
-
-        .countdown-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-main);
-            line-height: 1;
-        }
-
-        .countdown-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: var(--text-muted);
-            margin-top: 4px;
-            font-weight: 600;
-        }
-
-        .weather-main { display: flex; align-items: center; justify-content: space-between; }
-        .weather-temp { font-size: 2.5rem; font-weight: 700; color: var(--text-main); }
-        .weather-info { text-align: right; }
-        .weather-desc { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
-        .weather-location { font-size: 0.8rem; color: var(--text-muted); }
-
-        .weather-forecast {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .booking-details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 10px;
-        }
-
-        .detail-box { background-color: var(--accent-subtle); padding: 12px 14px; border-radius: var(--radius-md); }
-        .detail-box label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px; }
-        .detail-box .value { font-weight: 700; font-size: 0.88rem; color: var(--text-main); }
-        .detail-box .subvalue { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
-
-        .highlight-badge {
-            display: inline-block;
-            background: var(--accent-subtle);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            font-weight: 600;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-        }
-
-        #map {
-            height: 320px;
-            width: 100%;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-color);
-            z-index: 1;
-        }
-
-        .leaflet-popup-content-wrapper { border-radius: var(--radius-sm) !important; font-family: 'Space Grotesk', sans-serif !important; }
-        .leaflet-popup-content { margin: 10px 12px !important; }
-        .map-popup-title { font-weight: 700; font-size: 0.9rem; color: var(--text-main); }
-        .map-popup-cat { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 4px; }
-        .map-popup-link { display: inline-block; font-size: 0.72rem; font-weight: 600; color: var(--accent-dark); text-decoration: none; border-bottom: 1px solid var(--accent-dark); }
-
-        .pack-tabs {
-            display: flex;
-            gap: 4px;
-            background: var(--accent-subtle);
-            padding: 3px;
-            border-radius: var(--radius-md);
-            margin-bottom: 14px;
             flex-wrap: wrap;
         }
 
-        .tab-btn {
-            flex: 1;
-            min-width: 70px;
-            padding: 8px 6px;
-            border: none;
-            background: transparent;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .tab-btn.active { background: white; color: var(--text-main); box-shadow: var(--shadow-sm); }
-
-        .pack-input-group, .expense-input-group, .ideas-input-group {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
-            width: 100%;
-            flex-wrap: wrap;
-        }
-
-        .pack-input-group input, .expense-input-group input, .expense-input-group select, .ideas-input-group input, .ideas-input-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            outline: none;
+        .badge {
+            font-family: 'Space Grotesk', sans-serif;
+            padding: 6px 14px;
+            border-radius: 100px;
             font-size: 0.85rem;
-            background: white;
-            transition: var(--transition);
-        }
-
-        .pack-input-group input:focus, .expense-input-group input:focus, .ideas-input-group input:focus, .ideas-input-group select:focus {
-            border-color: var(--accent-dark);
-        }
-
-        .pack-input-group input { flex: 1; }
-
-        .btn-add {
-            background: var(--accent-dark);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: var(--radius-sm);
             font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-
-        .todo-list, .expense-list { list-style: none; max-height: 250px; overflow-y: auto; }
-
-        .todo-item, .expense-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            background: var(--bg-color);
-            border-radius: var(--radius-sm);
-            margin-bottom: 6px;
-            border: 1px solid transparent;
-        }
-
-        .todo-item.completed span { text-decoration: line-through; color: var(--text-light); }
-        .todo-left { display: flex; align-items: center; gap: 10px; overflow: hidden; }
-        .todo-checkbox { width: 16px; height: 16px; accent-color: var(--accent-dark); cursor: pointer; flex-shrink: 0; }
-
-        .btn-delete { color: var(--text-light); border: none; background: transparent; cursor: pointer; font-size: 0.85rem; }
-        .btn-delete:hover { color: #EF4444; }
-
-        .link-buttons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-
-        .quick-link-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 12px;
-            background: var(--bg-color);
-            border-radius: var(--radius-md);
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 0.82rem;
-            border: 1px solid var(--border-color);
-        }
-        .quick-link-btn i { color: var(--text-muted); }
-
-        .expense-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 14px; }
-        .expense-stat-card { background: var(--accent-subtle); padding: 10px 12px; border-radius: var(--radius-md); }
-        .expense-stat-card label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 2px; }
-        .expense-stat-card .val { font-size: 1rem; font-weight: 700; color: var(--text-main); }
-
-        /* STYLES FÜR AKTIVITÄTS- & IDEEN-ELEMENT */
-        .ideas-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 320px;
-            overflow-y: auto;
-        }
-
-        .idea-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--bg-color);
-            padding: 10px 14px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-color);
-            gap: 12px;
-        }
-
-        .idea-card.completed .idea-title {
-            text-decoration: line-through;
-            color: var(--text-light);
-        }
-
-        .idea-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .idea-content {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            flex: 1;
-        }
-
-        .idea-title-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .idea-title {
-            font-weight: 700;
-            font-size: 0.88rem;
-            color: var(--text-main);
-        }
-
-        .idea-subdetails {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            flex-wrap: wrap;
-        }
-
-        .dog-badge {
-            font-size: 0.72rem;
-            font-weight: 600;
-            padding: 2px 7px;
-            border-radius: 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .dog-badge.yes { background: #E0F2FE; color: #0369A1; }
-        .dog-badge.no { background: #FEE2E2; color: #991B1B; }
-        .dog-badge.unknown { background: #F1F5F9; color: #64748B; }
-
-        .secret-love-container {
-            position: relative;
-            margin-top: 24px;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .secret-love-hint {
-            font-size: 0.78rem;
-            color: var(--text-light);
-            cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: var(--transition);
-            user-select: none;
-            padding: 6px 12px;
-            border-radius: 20px;
         }
 
-        .secret-love-hint:hover {
+        .badge-neutral { background: #F4F4F5; color: var(--text-main); }
+        .badge-purple { background: var(--accent-purple-bg); color: var(--accent-purple-text); }
+
+        input, select {
+            font-family: 'Inter', sans-serif;
+            padding: 0.65rem 2.5rem 0.65rem 1rem; /* Platz nach rechts für das Pfeilchen */
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background-color: var(--surface);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+
+            /* Nativ-Pfeil entfernen */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+
+            /* Custom SVG-Chevron mit korrekt URL-encodiertem Hex-Code (%23 statt #) */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2318181B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center; /* 1rem Abstand vom rechten Rand */
+            background-size: 1.1rem;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--text-main);
+        }
+
+        /* Controls Bar */
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--accent-primary);
+            color: #FFFFFF;
+            border: none;
+            padding: 0.75rem 1.4rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
             color: var(--text-muted);
-            background: rgba(255, 255, 255, 0.5);
         }
 
-        .secret-love-message {
-            position: absolute;
-            bottom: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%) translateY(8px) scale(0.95);
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            padding: 12px 18px;
+        /* Grid & Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 1.75rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-subtle);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.25s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-3px);
+            border-color: #D4D4D8;
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            height: 210px;
             border-radius: var(--radius-md);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.2rem;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .dog-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(8px);
+        }
+
+        .dog-yes { background: rgba(236, 253, 245, 0.95); color: var(--accent-green-text); }
+        .dog-no { background: rgba(254, 242, 242, 0.95); color: var(--accent-red-text); }
+
+        .card-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            color: var(--text-main);
+        }
+
+        .card-location {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.88rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-dates {
+            background: var(--accent-blue-bg);
+            color: var(--accent-blue-text);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            background: #F4F4F5;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+        }
+
+        .price-box {
+            background: var(--accent-yellow-bg);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .price-total {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-yellow-text);
+        }
+
+        .price-per-couple {
+            font-size: 0.82rem;
+            color: var(--accent-yellow-text);
+            font-weight: 600;
+        }
+
+        .pros-cons {
+            margin-bottom: 1.2rem;
+            font-size: 0.88rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .pro { color: var(--accent-green-text); font-weight: 500; }
+        .con { color: var(--accent-red-text); font-weight: 500; }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .vote-btn {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--accent-purple-bg);
+            color: var(--accent-purple-text);
+            border: 1px solid rgba(109, 40, 217, 0.15);
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .vote-btn:hover {
+            background: #EDE9FE;
+        }
+
+        .link-btn {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .link-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--surface);
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        /* Modal Form */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(24, 24, 27, 0.4);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 540px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-hover);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-content h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
             font-size: 0.85rem;
             color: var(--text-main);
-            font-weight: 600;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 10;
         }
 
-        .secret-love-message::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 6px;
-            border-style: solid;
-            border-color: rgba(255, 255, 255, 0.8) transparent transparent transparent;
+        .form-group input, .form-group select {
+            width: 100%;
         }
 
-        .secret-love-container:hover .secret-love-message,
-        .secret-love-container:active .secret-love-message {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0) scale(1);
-            pointer-events: auto;
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <header>
-            <div class="header-title">
-                <h1><i class="fa-solid fa-compass"></i> Utrecht 2026</h1>
-                <p>EuroParcs De Utrechtse Heuvelrug • 17. Sep – 30. Sep 2026</p>
-            </div>
-            <div class="sync-badge" onclick="manualSync()">
-                <span class="sync-dot" id="sync-dot-status"></span>
-                <span id="sync-status-text">Google Sheets</span>
-                <i class="fa-solid fa-rotate" id="sync-refresh-icon"></i>
-            </div>
-        </header>
-
-        <div class="bento-grid">
-
-            <div class="bento-card col-span-4">
-                <div class="card-header">
-                    <span class="card-title"><i class="fa-solid fa-stopwatch"></i> Countdown</span>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">17. bis 30. September</span>
-                </div>
-                <div class="countdown-container">
-                    <div class="countdown-item"><span class="countdown-number" id="cd-days">--</span><span class="countdown-label">Tage</span></div>
-                    <div class="countdown-item"><span class="countdown-number" id="cd-hours">--</span><span class="countdown-label">Std</span></div>
-                    <div class="countdown-item"><span class="countdown-number" id="cd-mins">--</span><span class="countdown-label">Min</span></div>
-                </div>
-            </div>
-
-            <div class="bento-card col-span-4">
-                <div class="card-header">
-                    <span class="card-title"><i class="fa-solid fa-cloud-sun"></i> Wetter Maarn</span>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">Live</span>
-                </div>
-                <div class="weather-main">
-                    <div class="weather-temp" id="w-temp">19°C</div>
-                    <div class="weather-info">
-                        <div class="weather-desc" id="w-desc">Leicht bewölkt</div>
-                        <div class="weather-location">Utrechtse Heuvelrug</div>
-                    </div>
-                </div>
-                <div class="weather-forecast">
-                    <div><span>Do</span><br><strong style="color: var(--text-main);">20°C</strong></div>
-                    <div><span>Fr</span><br><strong style="color: var(--text-main);">18°C</strong></div>
-                    <div><span>Sa</span><br><strong style="color: var(--text-main);">21°C</strong></div>
-                    <div><span>So</span><br><strong style="color: var(--text-main);">19°C</strong></div>
-                </div>
-            </div>
-
-            <div class="bento-card col-span-4">
-                <div class="card-header">
-                    <span class="card-title"><i class="fa-solid fa-arrow-up-right-from-square"></i> Links & Services</span>
-                </div>
-                <div class="link-buttons">
-                    <a href="https://www.ns.nl/en" target="_blank" class="quick-link-btn"><i class="fa-solid fa-train"></i> NS Bahn NL</a>
-                    <a href="https://www.europarcs.nl" target="_blank" class="quick-link-btn"><i class="fa-solid fa-house-user"></i> Mein EuroParcs</a>
-                </div>
-            </div>
-
-            <div class="bento-card col-span-7">
-                <div class="card-header">
-                    <span class="card-title"><i class="fa-solid fa-suitcase-rolling"></i> Buchungsdetails</span>
-                    <span class="highlight-badge">B252011002851</span>
-                </div>
-                <div class="booking-details-grid">
-                    <div class="detail-box">
-                        <label><i class="fa-solid fa-location-dot"></i> Adresse Park</label>
-                        <div class="value">EuroParcs De Utrechtse Heuvelrug</div>
-                        <div class="subvalue">Laan van Laag Kanje 1, 3951 KD Maarn</div>
-                    </div>
-                    <div class="detail-box">
-                        <label><i class="fa-solid fa-house"></i> Unterkunft</label>
-                        <div class="value">Hackfort 6</div>
-                        <div class="subvalue">Ferienhaus für 6 Personen</div>
-                    </div>
-                    <div class="detail-box">
-                        <label><i class="fa-solid fa-calendar"></i> Zeitraum</label>
-                        <div class="value">17.09.2026 – 30.09.2026</div>
-                        <div class="subvalue">13 Nächte (Do. – Mi.)</div>
-                    </div>
-                    <div class="detail-box">
-                        <label><i class="fa-solid fa-clock"></i> Check-in / Out</label>
-                        <div class="value">Ab 16:00 Uhr</div>
-                        <div class="subvalue">Check-out bis 10:00 Uhr</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bento-card col-span-5">
-                <div class="card-header">
-                    <span class="card-title"><i class="fa-solid fa-bicycle"></i> Fahrrad-Touren</span>
-                    <span class="highlight-badge">Nationalpark</span>
-                </div>
-                <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px;">
-                    Direkter Einstieg in das Radnetz ab Maarn:
-                </p>
-                <ul style="font-size: 0.8rem; color: var(--text-main); padding-left: 16px; line-height: 1.6;">
-                    <li><strong>Route 1:</strong> Maarn – Pyramide von Austerlitz (ca. 14 km)</li>
-                    <li><strong>Route 2:</strong> Waldtour nach Amerongen (ca. 22 km)</li>
-                    <li><strong>Route 3:</strong> Tagestour ins Zentrum von Utrecht (ca. 25 km)</li>
-                </ul>
-            </div>
-
-            <!-- ELEMENT: IDEEN & UNTERNEHMUNGEN -->
-            <div class="bento-card col-span-12">
-                <div class="card-header">
-                    <span class="card-title"><i class="fa-solid fa-lightbulb"></i> Ideen & Unternehmungen</span>
-                    <span class="highlight-badge" id="ideas-counter">0 von 0 erledigt</span>
-                </div>
-
-                <!-- Eingabeformular -->
-                <div class="ideas-input-group">
-                    <input type="text" id="idea-title" placeholder="Titel (z.B. Bootsfahrt, Picknick...)" style="flex: 2; min-width: 150px;" onkeypress="handleIdeaKeyPress(event)">
-                    <input type="text" id="idea-location" placeholder="Ort (optional)..." style="flex: 1.5; min-width: 120px;" onkeypress="handleIdeaKeyPress(event)">
-                    <input type="text" id="idea-notes" placeholder="Anmerkungen (optional)..." style="flex: 2; min-width: 150px;" onkeypress="handleIdeaKeyPress(event)">
-                    <select id="idea-dog" style="flex: 1; min-width: 130px;">
-                        <option value="yes">🐶 Hund erlaubt</option>
-                        <option value="no">🚫 Kein Hund</option>
-                        <option value="unknown">❓ Unbekannt</option>
-                    </select>
-                    <button class="btn-add" onclick="addIdea()"><i class="fa-solid fa-plus"></i> Hinzufügen</button>
-                </div>
-
-                <!-- Ideen Liste -->
-                <div class="ideas-list" id="ideas-container"></div>
-            </div>
-
-            <div class="bento-card col-span-12">
-                <div class="card-header">
-                    <span class="card-title"><i class="fa-solid fa-map-location-dot"></i> Eure Wunschorte</span>
-                    <span class="highlight-badge">11 Orte</span>
-                </div>
-                <div id="map"></div>
-            </div>
-
-            <div class="bento-card col-span-12">
-                <div class="card-header">
-                    <span class="card-title"><i class="fa-solid fa-list-check"></i> Packlisten</span>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 0.75rem; color: var(--text-muted);" id="pack-counter">0 von 0 abgehakt</span>
-                        <button onclick="manualSync()" title="Jetzt mit Google Sheets abgleichen" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; padding: 2px 4px;">
-                            <i class="fa-solid fa-rotate" id="pack-refresh-icon"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="pack-tabs">
-                    <button class="tab-btn active" onclick="switchPackTab('philipp', this)">Philipp</button>
-                    <button class="tab-btn" onclick="switchPackTab('laura', this)">Laura</button>
-                    <button class="tab-btn" onclick="switchPackTab('schnuti', this)">Schnuti</button>
-                    <button class="tab-btn" onclick="switchPackTab('gemeinsam', this)">Gemeinsam</button>
-                </div>
-
-                <div class="pack-input-group">
-                    <input type="text" id="pack-input" placeholder="Neuer Gegenstand..." onkeypress="handlePackKeyPress(event)">
-                    <button class="btn-add" onclick="addPackItem()"><i class="fa-solid fa-plus"></i></button>
-                </div>
-
-                <ul class="todo-list" id="pack-list-container"></ul>
-            </div>
-
-            <div class="bento-card col-span-12">
-                <div class="card-header">
-                    <span class="card-title"><i class="fa-solid fa-wallet"></i> Urlaubskasse</span>
-                    <span class="highlight-badge" id="settlement-badge">Ausgeglichen</span>
-                </div>
-
-                <div class="expense-stats">
-                    <div class="expense-stat-card">
-                        <label>Gesamt</label>
-                        <div class="val" id="stat-total">0,00 €</div>
-                    </div>
-                    <div class="expense-stat-card">
-                        <label>Philipp</label>
-                        <div class="val" id="stat-philipp">0,00 €</div>
-                    </div>
-                    <div class="expense-stat-card">
-                        <label>Laura</label>
-                        <div class="val" id="stat-laura">0,00 €</div>
-                    </div>
-                    <div class="expense-stat-card" style="background: var(--bg-color); border: 1px solid var(--border-color);">
-                        <label>Ausgleich</label>
-                        <div class="val" id="stat-settlement" style="font-size: 0.85rem; margin-top: 2px;">--</div>
-                    </div>
-                </div>
-
-                <div class="expense-input-group">
-                    <input type="text" id="exp-title" placeholder="Beschreibung (z.B. Einkauf)" style="flex: 2; min-width: 140px;">
-                    <input type="number" id="exp-amount" placeholder="Betrag (€)" step="0.01" style="flex: 1; min-width: 80px;">
-                    <select id="exp-payer" style="flex: 1; min-width: 110px;">
-                        <option value="Philipp">Philipp</option>
-                        <option value="Laura">Laura</option>
-                    </select>
-                    <button class="btn-add" onclick="addExpense()"><i class="fa-solid fa-plus"></i> Hinzufügen</button>
-                </div>
-
-                <ul class="expense-list" id="expense-list-container"></ul>
-            </div>
-
+    <header>
+        <div class="header-title-group">
+            <h1>shitty hostel – right into '27</h1>
+            <p>Unterkünfte für 4 Leute und ein Schnutenbert</p>
         </div>
+        
+        <div class="header-tags">
+            <span class="badge badge-neutral"><i class="fa-solid fa-user-group"></i> 4 Personen</span>
+            <span class="badge badge-neutral"><i class="fa-solid fa-dog"></i> 1 Hund</span>
+            <span class="badge badge-purple"><i class="fa-solid fa-calendar-days"></i> Silvester '26</span>
+        </div>
+    </header>
 
-        <div class="secret-love-container">
-            <div class="secret-love-message">Freu' mich ganz dolli auf die Zeit mit dir und Schnu <i class="fa-solid fa-heart" style="color: #ff84ad;"></i></div>
-            <span class="secret-love-hint">Mit viel Liebe gemacht für unseren Urlaub</span>
+    <!-- Actions & Filter Bar -->
+    <div class="controls-bar">
+        <button class="btn-primary" onclick="openModal()">
+            <i class="fa-solid fa-plus"></i> Unterkunft hinzufügen
+        </button>
+
+        <div class="filter-group">
+            <label for="filterDog">Filter:</label>
+            <select id="filterDog" onchange="renderCards()">
+                <option value="all">Alle Unterkünfte</option>
+                <option value="yes">Nur Hunde erlaubt</option>
+            </select>
+
+            <label for="sortBy">Sortierung:</label>
+            <select id="sortBy" onchange="renderCards()">
+                <option value="votes">Beliebtheit (Votes)</option>
+                <option value="priceAsc">Preis (aufsteigend)</option>
+                <option value="priceDesc">Preis (absteigend)</option>
+            </select>
         </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Cards Container -->
+    <div class="grid" id="cardContainer"></div>
+
+    <!-- Modal Form -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2>Unterkunft hinzufügen</h2>
+            <form id="addForm" onsubmit="handleAdd(event)">
+                <div class="form-group">
+                    <label>Name der Unterkunft</label>
+                    <input type="text" id="name" required placeholder="z.B. Chalet Bergliebe">
+                </div>
+                <div class="form-group">
+                    <label>Ort / Region</label>
+                    <input type="text" id="location" required placeholder="z.B. Harz, Braunlage">
+                </div>
+                <div class="form-group">
+                    <label>Reisezeitraum</label>
+                    <input type="text" id="dates" required placeholder="z.B. 29.12.2026 - 03.01.2027 (5 Nächte)">
+                </div>
+                <div class="form-group">
+                    <label>Bild-URL (optional)</label>
+                    <input type="url" id="image" placeholder="https://images.unsplash.com/...">
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label>Gesamtpreis (€)</label>
+                        <input type="number" id="price" required placeholder="1200">
+                    </div>
+                    <div>
+                        <label>Schlafzimmer</label>
+                        <input type="number" id="bedrooms" min="1" value="2" required>
+                    </div>
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label>Badezimmer</label>
+                        <input type="number" id="bathrooms" min="1" value="2" required>
+                    </div>
+                    <div>
+                        <label>Hunde erlaubt?</label>
+                        <select id="dogAllowed">
+                            <option value="true">Ja, erlaubt</option>
+                            <option value="false">Nein</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Vorteile / Highlights</label>
+                    <input type="text" id="pros" placeholder="z.B. Kamin, Sauna, eingezäunter Garten">
+                </div>
+                <div class="form-group">
+                    <label>Nachteile</label>
+                    <input type="text" id="cons" placeholder="z.B. Kein Geschirrspüler">
+                </div>
+                <div class="form-group">
+                    <label>Link zum Angebot</label>
+                    <input type="url" id="link" required placeholder="https://airbnb.de/...">
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary" style="flex: 1; justify-content: center;">Speichern</button>
+                    <button type="button" onclick="closeModal()" style="background: #F4F4F5; border: 1px solid var(--border-color); padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer;">Abbrechen</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
-        let currentTab = 'philipp';
-        const sheetUrl = "https://script.google.com/macros/s/AKfycbz8BkM5ibVZn-IjUPNypkuDIHmNyriKkswPTWP4rRrCHYwtjnZXk_kvD-o3UrLyYsMnZg/exec";
+        let places = JSON.parse(localStorage.getItem('places')) || [];
+        const sheetScriptUrl = 'https://script.google.com/macros/s/AKfycbzBnZpq_XpI04b_mJRvNSQydEMxVB6XrKGym_JhUuy0BiwBuBw_ZID2TTwmLXbDWKq1/exec';
 
-        function generateId() {
-            return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-        }
-
-        function sanitizePackData(raw) {
-            const clean = { philipp: [], laura: [], schnuti: [], gemeinsam: [] };
-            if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return clean;
-            ['philipp', 'laura', 'schnuti', 'gemeinsam'].forEach(cat => {
-                if (Array.isArray(raw[cat])) {
-                    clean[cat] = raw[cat]
-                        .filter(item => item && (typeof item === 'string' || (typeof item.text === 'string' && item.text.trim() !== '')))
-                        .map(item => {
-                            if (typeof item === 'string') {
-                                return { id: generateId(), text: item, completed: false };
-                            }
-                            return {
-                                id: item.id || generateId(),
-                                text: item.text,
-                                completed: !!item.completed || !!item.checked
-                            };
-                        });
-                }
-            });
-            return clean;
-        }
-
-        function sanitizeIdeasData(raw) {
-            if (!Array.isArray(raw)) return [];
-            return raw.map(item => ({
-                id: item.id || generateId(),
-                title: item.title || '',
-                location: item.location || '',
-                notes: item.notes || '',
-                dog: item.dog || 'yes',
-                completed: !!item.completed
-            })).filter(i => i.title.trim() !== '');
-        }
-
-        let packData = sanitizePackData(JSON.parse(localStorage.getItem('utrecht_pack_data')));
-        let ideasData = sanitizeIdeasData(JSON.parse(localStorage.getItem('utrecht_ideas_data')));
-        let expenseData = JSON.parse(localStorage.getItem('utrecht_expense_data')) || [
-            { id: 1, title: 'Einkauf Albert Heijn', amount: 45.50, payer: 'Philipp' },
-            { id: 2, title: 'Zugtickets Utrecht', amount: 18.20, payer: 'Laura' }
-        ];
-
-        const mapPlaces = [
-            { name: "EuroParcs De Utrechtse Heuvelrug", cat: "Holiday Park (Unterkunft)", lat: 52.0620, lng: 5.3850 },
-            { name: "Titanic: An Immersive Voyage", cat: "History Museum (Utrecht)", lat: 52.0908, lng: 5.1222 },
-            { name: "De Haar Castle", cat: "Castle (Haarzuilens)", lat: 52.1214, lng: 4.9863 },
-            { name: "Parque West Climbing Parcour", cat: "Leisure Center", lat: 52.0886, lng: 5.0435 },
-            { name: "Play-in | The Wall Utrecht", cat: "Amusement Center", lat: 52.1030, lng: 5.0483 },
-            { name: "Hans & Gretel Pancake House", cat: "Crêperie / Restaurant", lat: 52.3323, lng: 5.5186 },
-            { name: "Geertjes Hoeve", cat: "Children's Farm", lat: 52.1293, lng: 4.9961 },
-            { name: "Alpaca Eco Farm", cat: "Recreation Center", lat: 52.1550, lng: 4.8810 },
-            { name: "Stichting De Ezelsociëteit", cat: "Animal Sanctuary (Zeist)", lat: 52.0298, lng: 5.3341 },
-            { name: "AKIBA District", cat: "Video Arcade (Utrecht)", lat: 52.0911, lng: 5.1147 },
-            { name: "Zaandam", cat: "Stadt / Ausflug", lat: 52.4420, lng: 4.8292 }
-        ];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initCountdown();
-            initMap();
-            renderIdeas();
-            renderPackList();
-            renderExpenses();
-            loadFromGoogleSheets(true);
-            
-            setInterval(() => {
-                loadFromGoogleSheets(false);
-            }, 5000);
+        document.addEventListener("DOMContentLoaded", () => {
+            loadFromSheet();
         });
 
-        function initCountdown() {
-            const targetDate = new Date('2026-09-30T10:00:00').getTime();
-            function update() {
-                const now = new Date().getTime();
-                const diff = targetDate - now;
-                if (diff <= 0) return;
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                document.getElementById('cd-days').innerText = days < 10 ? '0' + days : days;
-                document.getElementById('cd-hours').innerText = hours < 10 ? '0' + hours : hours;
-                document.getElementById('cd-mins').innerText = mins < 10 ? '0' + mins : mins;
-            }
-            update();
-            setInterval(update, 60000);
-        }
+        function renderCards() {
+            const container = document.getElementById('cardContainer');
+            const filterDog = document.getElementById('filterDog').value;
+            const sortBy = document.getElementById('sortBy').value;
 
-        function initMap() {
-            const map = L.map('map').setView([52.10, 5.18], 10);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                maxZoom: 19,
-                subdomains: 'abcd',
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(map);
-
-            mapPlaces.forEach(place => {
-                const navUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name)}`;
-                const marker = L.marker([place.lat, place.lng]).addTo(map);
-                marker.bindPopup(`
-                    <div class="map-popup-title">${escapeHtml(place.name)}</div>
-                    <div class="map-popup-cat">${escapeHtml(place.cat)}</div>
-                    <a href="${navUrl}" target="_blank" class="map-popup-link"><i class="fa-solid fa-location-arrow"></i> Maps öffnen</a>
-                `);
-            });
-        }
-
-        /* RENDERING DER IDEEN & UNTERNEHMUNGEN (MIT AUTOMATISCHER SORTIERUNG) */
-        function renderIdeas() {
-            const container = document.getElementById('ideas-container');
             container.innerHTML = '';
 
-            const completedCount = ideasData.filter(i => i.completed).length;
-            document.getElementById('ideas-counter').innerText = `${completedCount} von ${ideasData.length} erledigt`;
+            let filtered = places.filter(p => {
+                if (filterDog === 'yes') return p.dogAllowed;
+                return true;
+            });
 
-            if (ideasData.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: var(--text-light); font-size: 0.82rem; padding: 16px 0;">Noch keine Ideen eingetragen.</div>`;
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-house-chimney-crack"></i>
+                        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Noch keine Unterkünfte eingetragen</h3>
+                        <p style="font-size: 0.9rem;">Füge die erste Unterkunft hinzu, um den Vergleich zu starten!</p>
+                    </div>
+                `;
                 return;
             }
 
-            // Sortieren: Offene Punkte oben, abgehakte Punkte nach unten
-            const sortedIdeas = [...ideasData].sort((a, b) => (a.completed === b.completed ? 0 : a.completed ? 1 : -1));
+            if (sortBy === 'votes') filtered.sort((a,b) => b.votes - a.votes);
+            if (sortBy === 'priceAsc') filtered.sort((a,b) => a.price - b.price);
+            if (sortBy === 'priceDesc') filtered.sort((a,b) => b.price - a.price);
 
-            sortedIdeas.forEach(item => {
-                const card = document.createElement('div');
-                card.className = `idea-card ${item.completed ? 'completed' : ''}`;
-
-                let dogBadge = '';
-                if (item.dog === 'yes') {
-                    dogBadge = `<span class="dog-badge yes"><i class="fa-solid fa-dog"></i> Hund erlaubt</span>`;
-                } else if (item.dog === 'no') {
-                    dogBadge = `<span class="dog-badge no"><i class="fa-solid fa-ban"></i> Kein Hund</span>`;
-                } else {
-                    dogBadge = `<span class="dog-badge unknown"><i class="fa-solid fa-circle-question"></i> Hund?</span>`;
-                }
-
-                card.innerHTML = `
-                    <div class="idea-left">
-                        <input type="checkbox" class="todo-checkbox" ${item.completed ? 'checked' : ''} onchange="toggleIdea('${item.id}')">
-                        <div class="idea-content">
-                            <div class="idea-title-row">
-                                <span class="idea-title">${escapeHtml(item.title)}</span>
-                                ${dogBadge}
+            filtered.forEach(p => {
+                const perCouple = (p.price / 2).toFixed(0);
+                const defaultImg = 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=600&q=80';
+                
+                const cardHtml = `
+                    <div class="card">
+                        <div>
+                            <div class="card-img-wrapper">
+                                <img src="${p.image || defaultImg}" class="card-img" alt="${p.name}">
+                                <div class="dog-badge ${p.dogAllowed ? 'dog-yes' : 'dog-no'}">
+                                    <i class="fa-solid ${p.dogAllowed ? 'fa-check' : 'fa-xmark'}"></i>
+                                    ${p.dogAllowed ? 'Hund erlaubt' : 'Keine Hunde'}
+                                </div>
                             </div>
-                            <div class="idea-subdetails">
-                                ${item.location ? `<span><i class="fa-solid fa-location-dot"></i> ${escapeHtml(item.location)}</span>` : ''}
-                                ${item.notes ? `<span><i class="fa-regular fa-comment-dots"></i> ${escapeHtml(item.notes)}</span>` : ''}
+                            <h3 class="card-title">${p.name}</h3>
+                            <div class="card-location"><i class="fa-solid fa-location-dot"></i> ${p.location}</div>
+
+                            <div class="card-dates">
+                                <span><i class="fa-regular fa-calendar-check"></i> ${p.dates || 'Zeitraum flexibel'}</span>
+                            </div>
+
+                            <div class="specs-grid">
+                                <div class="spec-item"><i class="fa-solid fa-bed" style="color: var(--text-muted);"></i> ${p.bedrooms} Schlafzimmer</div>
+                                <div class="spec-item"><i class="fa-solid fa-bath" style="color: var(--text-muted);"></i> ${p.bathrooms} Bäder</div>
+                            </div>
+
+                            <div class="price-box">
+                                <div>
+                                    <div class="price-total">${p.price} €</div>
+                                    <div style="font-size: 0.75rem; color: var(--accent-yellow-text); font-weight: 500;">Gesamtpreis</div>
+                                </div>
+                                <div class="price-per-couple">${perCouple} € / Paar</div>
+                            </div>
+
+                            <div class="pros-cons">
+                                ${p.pros ? `<div class="pro">✓ ${p.pros}</div>` : ''}
+                                ${p.cons ? `<div class="con">✕ ${p.cons}</div>` : ''}
                             </div>
                         </div>
+
+                        <div class="card-actions">
+                            <button class="vote-btn" onclick="vote(${p.id})">
+                                <i class="fa-solid fa-heart"></i> ${p.votes} Stimmen
+                            </button>
+                            <a href="${p.link}" target="_blank" class="link-btn">
+                                Angebot öffnen <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i>
+                            </a>
+                        </div>
                     </div>
-                    <button class="btn-delete" onclick="deleteIdea('${item.id}')"><i class="fa-solid fa-trash-can"></i></button>
                 `;
-                container.appendChild(card);
+                container.innerHTML += cardHtml;
             });
         }
 
-        function addIdea() {
-            const titleInput = document.getElementById('idea-title');
-            const locInput = document.getElementById('idea-location');
-            const notesInput = document.getElementById('idea-notes');
-            const dogSelect = document.getElementById('idea-dog');
-
-            const title = titleInput.value.trim();
-            const location = locInput.value.trim();
-            const notes = notesInput.value.trim();
-            const dog = dogSelect.value;
-
-            if (!title) return;
-
-            ideasData.push({
-                id: generateId(),
-                title: title,
-                location: location,
-                notes: notes,
-                dog: dog,
-                completed: false
-            });
-
-            titleInput.value = '';
-            locInput.value = '';
-            notesInput.value = '';
-
-            saveAndRender();
-        }
-
-        function handleIdeaKeyPress(e) {
-            if (e.key === 'Enter') addIdea();
-        }
-
-        function toggleIdea(id) {
-            const item = ideasData.find(i => i.id === id);
-            if (item) {
-                item.completed = !item.completed;
-                saveAndRender();
+        function vote(id) {
+            const place = places.find(p => p.id === id);
+            if(place) {
+                place.votes += 1;
+                saveData();
+                renderCards();
             }
         }
 
-        function deleteIdea(id) {
-            ideasData = ideasData.filter(i => i.id !== id);
-            saveAndRender();
-        }
+        async function handleAdd(e) {
+            e.preventDefault();
+            const newPlace = {
+                id: Date.now(),
+                name: document.getElementById('name').value,
+                location: document.getElementById('location').value,
+                dates: document.getElementById('dates').value,
+                image: document.getElementById('image').value,
+                price: parseFloat(document.getElementById('price').value),
+                bedrooms: parseInt(document.getElementById('bedrooms').value),
+                bathrooms: parseInt(document.getElementById('bathrooms').value),
+                dogAllowed: document.getElementById('dogAllowed').value === 'true',
+                pros: document.getElementById('pros').value,
+                cons: document.getElementById('cons').value,
+                link: document.getElementById('link').value,
+                votes: 0
+            };
 
-        function switchPackTab(tab, btnEl) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            if (btnEl) btnEl.classList.add('active');
-            renderPackList();
-        }
+            places.push(newPlace);
+            saveData();
+            renderCards();
 
-        /* RENDERING DER PACKLISTEN (MIT AUTOMATISCHER SORTIERUNG) */
-        function renderPackList() {
-            const container = document.getElementById('pack-list-container');
-            container.innerHTML = '';
-            if (!packData[currentTab]) packData[currentTab] = [];
-
-            // Sortieren: Offene Gegenstände oben, abgehakte nach unten
-            const sortedPackList = [...packData[currentTab]].sort((a, b) => (a.completed === b.completed ? 0 : a.completed ? 1 : -1));
-            
-            sortedPackList.forEach((item) => {
-                const li = document.createElement('li');
-                li.className = `todo-item ${item.completed ? 'completed' : ''}`;
-                li.innerHTML = `
-                    <div class="todo-left">
-                        <input type="checkbox" class="todo-checkbox" ${item.completed ? 'checked' : ''} onchange="togglePackItem('${currentTab}', '${item.id}')">
-                        <span>${escapeHtml(item.text)}</span>
-                    </div>
-                    <button class="btn-delete" onclick="deletePackItem('${currentTab}', '${item.id}')"><i class="fa-solid fa-trash-can"></i></button>
-                `;
-                container.appendChild(li);
-            });
-            updatePackCounter();
-        }
-
-        function addPackItem() {
-            const input = document.getElementById('pack-input');
-            const text = input.value.trim();
-            if (!text) return;
-            if (!packData[currentTab]) packData[currentTab] = [];
-            packData[currentTab].push({ id: generateId(), text: text, completed: false });
-            input.value = '';
-            saveAndRender();
-        }
-
-        function handlePackKeyPress(e) {
-            if (e.key === 'Enter') addPackItem();
-        }
-
-        function togglePackItem(tab, itemId) {
-            const item = packData[tab].find(i => i.id === itemId);
-            if (item) {
-                item.completed = !item.completed;
-                saveAndRender();
-            }
-        }
-
-        function deletePackItem(tab, itemId) {
-            packData[tab] = packData[tab].filter(i => i.id !== itemId);
-            saveAndRender();
-        }
-
-        function updatePackCounter() {
-            let total = 0, completed = 0;
-            ['philipp', 'laura', 'schnuti', 'gemeinsam'].forEach(cat => {
-                if (packData[cat]) {
-                    total += packData[cat].length;
-                    completed += packData[cat].filter(i => i.completed).length;
+            if(sheetScriptUrl) {
+                try {
+                    await fetch(sheetScriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newPlace)
+                    });
+                } catch(err) {
+                    console.error("Fehler beim Sheet-Upload:", err);
                 }
-            });
-            document.getElementById('pack-counter').innerText = `${completed} von ${total} abgehakt`;
+            }
+
+            closeModal();
+            document.getElementById('addForm').reset();
         }
 
-        function renderExpenses() {
-            const container = document.getElementById('expense-list-container');
-            container.innerHTML = '';
-            let total = 0, philippTotal = 0, lauraTotal = 0;
+        function saveData() {
+            localStorage.setItem('places', JSON.stringify(places));
+        }
 
-            expenseData.forEach((exp) => {
-                total += exp.amount;
-                if (exp.payer === 'Philipp') philippTotal += exp.amount;
-                else lauraTotal += exp.amount;
-
-                const li = document.createElement('li');
-                li.className = 'expense-item';
-                li.innerHTML = `
-                    <div>
-                        <strong>${escapeHtml(exp.title)}</strong><br>
-                        <small style="color: var(--text-muted);">${exp.amount.toFixed(2)} € • Bezahlt von ${exp.payer}</small>
-                    </div>
-                    <button class="btn-delete" onclick="deleteExpense(${exp.id})"><i class="fa-solid fa-trash-can"></i></button>
-                `;
-                container.appendChild(li);
-            });
-
-            document.getElementById('stat-total').innerText = total.toFixed(2) + ' €';
-            document.getElementById('stat-philipp').innerText = philippTotal.toFixed(2) + ' €';
-            document.getElementById('stat-laura').innerText = lauraTotal.toFixed(2) + ' €';
-
-            const diff = philippTotal - lauraTotal;
-            const settlementEl = document.getElementById('stat-settlement');
-            const badgeEl = document.getElementById('settlement-badge');
-
-            if (Math.abs(diff) < 0.01) {
-                settlementEl.innerText = 'Ausgeglichen';
-                badgeEl.innerText = 'Ausgeglichen';
-            } else if (diff > 0) {
-                settlementEl.innerText = `Laura schuldet Philipp ${(diff / 2).toFixed(2)} €`;
-                badgeEl.innerText = 'Offen';
-            } else {
-                settlementEl.innerText = `Philipp schuldet Laura ${(Math.abs(diff) / 2).toFixed(2)} €`;
-                badgeEl.innerText = 'Offen';
+        async function loadFromSheet() {
+            if(!sheetScriptUrl) return;
+            try {
+                const res = await fetch(sheetScriptUrl);
+                const data = await res.json();
+                if(Array.isArray(data) && data.length > 0) {
+                    places = data.map((item, index) => ({
+                        id: index + 1,
+                        name: item.Unterkunft || item.name || "Unbenannt",
+                        location: item.Ort || item.location || "-",
+                        dates: item.Zeitraum || item.dates || "30.12.2026 - 03.01.2027",
+                        image: item.image || "",
+                        price: parseFloat(item.Preis) || parseFloat(item.price) || 0,
+                        bedrooms: parseInt(item.Schlafzimmer) || parseInt(item.bedrooms) || 2,
+                        bathrooms: parseInt(item.Bäder) || parseInt(item.bathrooms) || 2,
+                        dogAllowed: (item["Hund erlaubt"] || item.dogAllowed) === "Ja" || item.dogAllowed === true,
+                        pros: item.Vorteile || item.pros || "",
+                        cons: item.Nachteile || item.cons || "",
+                        link: item.Link || item.link || "#",
+                        votes: parseInt(item.Votes) || parseInt(item.votes) || 0
+                    }));
+                    saveData();
+                    renderCards();
+                }
+            } catch(e) {
+                renderCards();
             }
         }
 
-        function addExpense() {
-            const titleInput = document.getElementById('exp-title');
-            const amountInput = document.getElementById('exp-amount');
-            const payerSelect = document.getElementById('exp-payer');
-
-            const title = titleInput.value.trim();
-            const amount = parseFloat(amountInput.value);
-            const payer = payerSelect.value;
-
-            if (!title || isNaN(amount) || amount <= 0) return;
-
-            expenseData.push({ id: Date.now(), title, amount, payer });
-            titleInput.value = '';
-            amountInput.value = '';
-            saveAndRender();
-        }
-
-        function deleteExpense(expId) {
-            expenseData = expenseData.filter(e => e.id !== expId);
-            saveAndRender();
-        }
-
-        function saveAndRender() {
-            localStorage.setItem('utrecht_pack_data', JSON.stringify(packData));
-            localStorage.setItem('utrecht_ideas_data', JSON.stringify(ideasData));
-            localStorage.setItem('utrecht_expense_data', JSON.stringify(expenseData));
-            renderIdeas();
-            renderPackList();
-            renderExpenses();
-            syncToGoogleSheets();
-        }
-
-        function updateSyncBadge(status = 'connected') {
-            const dot = document.getElementById('sync-dot-status');
-            const txt = document.getElementById('sync-status-text');
-            const icon1 = document.getElementById('sync-refresh-icon');
-            const icon2 = document.getElementById('pack-refresh-icon');
-
-            if (status === 'syncing') {
-                dot.style.backgroundColor = '#3B82F6';
-                txt.innerText = 'Synchronisiere...';
-                if (icon1) icon1.classList.add('fa-spin');
-                if (icon2) icon2.classList.add('fa-spin');
-            } else if (status === 'error') {
-                dot.style.backgroundColor = '#EF4444';
-                txt.innerText = 'Fehler';
-                if (icon1) icon1.classList.remove('fa-spin');
-                if (icon2) icon2.classList.remove('fa-spin');
-            } else {
-                dot.style.backgroundColor = '#10B981';
-                txt.innerText = 'Verbunden';
-                if (icon1) icon1.classList.remove('fa-spin');
-                if (icon2) icon2.classList.remove('fa-spin');
-            }
-        }
-
-        function manualSync() {
-            loadFromGoogleSheets(true);
-        }
-
-        function syncToGoogleSheets() {
-            if (!sheetUrl) return;
-            updateSyncBadge('syncing');
-            const payload = { packData, ideasData, expenseData };
-            fetch(sheetUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).then(() => {
-                setTimeout(() => updateSyncBadge('connected'), 1000);
-            }).catch(err => {
-                console.error('Sync error:', err);
-                updateSyncBadge('error');
-            });
-        }
-
-        function loadFromGoogleSheets(force = false) {
-            if (!sheetUrl) return;
-
-            const activeElem = document.activeElement;
-            if (!force && activeElem && (activeElem.tagName === 'INPUT' || activeElem.tagName === 'SELECT')) {
-                return;
-            }
-
-            updateSyncBadge('syncing');
-            fetch(sheetUrl)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && typeof data === 'object') {
-                        if (data.packData) packData = sanitizePackData(data.packData);
-                        if (data.ideasData) ideasData = sanitizeIdeasData(data.ideasData);
-                        if (data.expenseData) expenseData = data.expenseData;
-                        
-                        localStorage.setItem('utrecht_pack_data', JSON.stringify(packData));
-                        localStorage.setItem('utrecht_ideas_data', JSON.stringify(ideasData));
-                        localStorage.setItem('utrecht_expense_data', JSON.stringify(expenseData));
-                    }
-                    renderIdeas();
-                    renderPackList();
-                    renderExpenses();
-                    updateSyncBadge('connected');
-                })
-                .catch(() => {
-                    renderIdeas();
-                    renderPackList();
-                    renderExpenses();
-                    updateSyncBadge('connected');
-                });
-        }
-
-        function escapeHtml(str) {
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
+        function openModal() { document.getElementById('modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
     </script>
 </body>
 </html>
