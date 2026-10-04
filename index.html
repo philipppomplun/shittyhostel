@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shitty Hostel – Silvester Planer</title>
+    <title>Shitty Hostel — Silvester Planer</title>
     
     <!-- Google Fonts: Space Grotesk & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -106,27 +106,38 @@
         .badge-neutral { background: #F4F4F5; color: var(--text-main); }
         .badge-purple { background: var(--accent-purple-bg); color: var(--accent-purple-text); }
 
-        input, select {
+        /* Form Controls & Custom Selects */
+        input {
             font-family: 'Inter', sans-serif;
-            padding: 0.65rem 2.5rem 0.65rem 1rem; /* Platz nach rechts für das Pfeilchen */
+            padding: 0.65rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--surface);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select {
+            font-family: 'Inter', sans-serif;
+            padding: 0.65rem 2.5rem 0.65rem 1rem;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-color);
             background-color: var(--surface);
             color: var(--text-main);
             font-size: 0.9rem;
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s;
             cursor: pointer;
 
-            /* Nativ-Pfeil entfernen */
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
 
-            /* Custom SVG-Chevron mit korrekt URL-encodiertem Hex-Code (%23 statt #) */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2318181B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 1rem center; /* 1rem Abstand vom rechten Rand */
+            background-position: right 1rem center;
             background-size: 1.1rem;
         }
 
@@ -378,7 +389,7 @@
             color: var(--text-main);
         }
 
-        /* Modal Form */
+        /* Modal Form & Overlay */
         .modal {
             display: none;
             position: fixed;
@@ -400,6 +411,30 @@
             overflow-y: auto;
             box-shadow: var(--shadow-hover);
             border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: transparent;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background-color: #F4F4F5;
+            color: var(--text-main);
         }
 
         .modal-content h2 {
@@ -471,8 +506,12 @@
     <div class="grid" id="cardContainer"></div>
 
     <!-- Modal Form -->
-    <div class="modal" id="modal">
+    <div class="modal" id="modal" onclick="handleBackdropClick(event)">
         <div class="modal-content">
+            <button type="button" class="modal-close-btn" onclick="closeModal()" aria-label="Schließen">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
             <h2>Unterkunft hinzufügen</h2>
             <form id="addForm" onsubmit="handleAdd(event)">
                 <div class="form-group">
@@ -706,6 +745,12 @@
 
         function openModal() { document.getElementById('modal').style.display = 'flex'; }
         function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+        function handleBackdropClick(e) {
+            if (e.target.id === 'modal') {
+                closeModal();
+            }
+        }
     </script>
 </body>
 </html>
